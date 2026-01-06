@@ -1,0 +1,59 @@
+@model TourismMVC.Models.AgencyProfile
+
+@{
+    ViewData["Title"] = "Edit Agency Profile";
+}
+
+<h1>Edit Agency Profile</h1>
+
+<h4>Agency Profile</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ApplicationUserId" />
+            <input type="hidden" asp-for="LicenseDocumentPath" />
+
+            <div class="form-group mb-3">
+                <label asp-for="AgencyName" class="control-label"></label>
+                <input asp-for="AgencyName" class="form-control" />
+                <span asp-validation-for="AgencyName" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="LicenseNumber" class="control-label"></label>
+                <input asp-for="LicenseNumber" class="form-control" />
+                <span asp-validation-for="LicenseNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="BusinessEmail" class="control-label"></label>
+                <input asp-for="BusinessEmail" class="form-control" />
+                <span asp-validation-for="BusinessEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="LicenseFile" class="control-label"></label>
+                <input asp-for="LicenseFile" class="form-control" type="file" />
+                <span asp-validation-for="LicenseFile" class="text-danger"></span>
+                @if (!string.IsNullOrEmpty(Model.LicenseDocumentPath))
+                {
+                    <div class="mt-2">
+                        <small>Current file: @Model.LicenseDocumentPath</small>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

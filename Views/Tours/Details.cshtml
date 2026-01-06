@@ -1,0 +1,119 @@
+@model TourismMVC.Models.TourPackage
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h2 class="card-title mb-0">@Model.Name</h2>
+                </div>
+                <div class="card-body">
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid mb-4 rounded w-100"
+                         style="height: 400px; object-fit: cover;"
+                         onerror="this.src='https://via.placeholder.com/800x400/3498db/ffffff?text=@Uri.EscapeDataString(Model.Name)';">
+
+                    <h3 class="h4 mb-3"><i class="fas fa-info-circle text-primary"></i> Tour Overview</h3>
+                    <p class="card-text">@Model.Description</p>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light h-100">
+                                <div class="card-body">
+                                    <h4 class="h5 mb-3"><i class="fas fa-map-marked-alt text-success"></i> Tour Details</h4>
+                                    <p class="mb-2"><strong>Location:</strong> @Model.Location</p>
+                                    <p class="mb-2"><strong>Duration:</strong> @Model.DurationDays day(s)</p>
+                                    <p class="mb-2"><strong>Difficulty:</strong> @Model.Difficulty</p>
+                                    <p class="mb-2"><strong>Start Date:</strong> @Model.StartDate.ToString("dddd, dd MMMM yyyy")</p>
+                                    <p class="mb-0"><strong>Group Size:</strong> Max @Model.MaxGroupSize people</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light h-100">
+                                <div class="card-body">
+                                    <h4 class="h5 mb-3"><i class="fas fa-dollar-sign text-success"></i> Pricing & Booking</h4>
+                                    <h1 class="text-primary fw-bold display-6">$@Model.Price</h1>
+                                    <p class="text-muted small">per person</p>
+
+                                    <div class="mt-4">
+                                        <a href="@Url.Action("Book", new { id = Model.Id })"
+                                           class="btn btn-success btn-lg w-100 fw-bold">
+                                            <i class="fas fa-calendar-check"></i> BOOK NOW
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-info mb-4">
+                <div class="card-header bg-info text-white">
+                    <h4 class="h5 mb-0"><i class="fas fa-clock"></i> Quick Facts</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Instant confirmation</p>
+                    <p class="mb-2"><i class="fas fa-undo text-info me-2"></i> Free cancellation 48h before</p>
+                    <p class="mb-2"><i class="fas fa-language text-primary me-2"></i> English speaking guide</p>
+                    <p class="mb-2"><i class="fas fa-shield-alt text-warning me-2"></i> Safety equipment provided</p>
+                    <p class="mb-0"><i class="fas fa-camera text-danger me-2"></i> Photo opportunities</p>
+                </div>
+            </div>
+
+            <div class="card border-warning mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="h5 mb-0"><i class="fas fa-exclamation-triangle"></i> Important Notes</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><i class="fas fa-hiking me-2"></i> Suitable for ages 12+</p>
+                    <p class="mb-2"><i class="fas fa-umbrella me-2"></i> Weather dependent activity</p>
+                    <p class="mb-2"><i class="fas fa-tshirt me-2"></i> Wear comfortable clothing</p>
+                    <p class="mb-0"><i class="fas fa-sun me-2"></i> Bring sunscreen and hat</p>
+                </div>
+            </div>
+            
+            <div class="card border-secondary mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="h5 mb-0"><i class="fas fa-comments"></i> Tourist Reviews</h4>
+                </div>
+                <div class="card-body">
+                    <a asp-action="LeaveFeedback" asp-route-id="@Model.Id" class="btn btn-outline-primary mb-3 w-100">
+                        <i class="fas fa-pen"></i> Write a Review
+                    </a>
+                    
+                    @if (ViewBag.Feedbacks != null && ((IEnumerable<dynamic>)ViewBag.Feedbacks).Any())
+                    {
+                        foreach (var review in ViewBag.Feedbacks)
+                        {
+                            <div class="border-bottom pb-2 mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <strong>@review.TouristName</strong>
+                                    <span class="text-warning">
+                                        @for(int i=0; i<review.Rating; i++) { <i class="fas fa-star"></i> }
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-1">@review.DatePosted.ToString("d MMM yyyy")</p>
+                                <p class="mb-0">@review.Comment</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">No reviews yet. Be the first!</p>
+                    }
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                 <a href="@Url.Action("Browse")" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

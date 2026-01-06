@@ -1,0 +1,60 @@
+@model TourismMVC.Models.Feedback
+
+@{
+    ViewData["Title"] = "Leave Feedback";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0"><i class="fas fa-star"></i> Rate Your Experience</h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="mb-4">You are reviewing: <strong>@ViewBag.TourName</strong></h4>
+                    
+                    <form asp-action="LeaveFeedback">
+                        <input type="hidden" asp-for="TourPackageId" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="TouristName" class="form-label fw-bold">Your Name</label>
+                            <input asp-for="TouristName" class="form-control" />
+                            <span asp-validation-for="TouristName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Rating" class="form-label fw-bold">Rating (1-5 Stars)</label>
+                            <div class="rating-input">
+                                <select asp-for="Rating" class="form-select">
+                                    <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                                    <option value="4">⭐⭐⭐⭐ (Good)</option>
+                                    <option value="3">⭐⭐⭐ (Average)</option>
+                                    <option value="2">⭐⭐ (Poor)</option>
+                                    <option value="1">⭐ (Terrible)</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Comment" class="form-label fw-bold">Your Review</label>
+                            <textarea asp-for="Comment" class="form-control" rows="5" placeholder="Tell us about your trip..."></textarea>
+                            <span asp-validation-for="Comment" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                             <button type="submit" class="btn btn-success btn-lg">Submit Feedback</button>
+                             <a asp-action="Details" asp-route-id="@Model.TourPackageId" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

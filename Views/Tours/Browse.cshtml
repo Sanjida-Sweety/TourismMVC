@@ -1,0 +1,174 @@
+@model IEnumerable<TourismMVC.Models.TourPackage>
+@{
+    ViewData["Title"] = "Browse Australian Tours";
+}
+
+<div class="container mt-4">
+    <h1><i class="fas fa-binoculars"></i> Browse Australian Tours</h1>
+
+    <!-- FIXED FILTER SECTION -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title text-primary"><i class="fas fa-filter"></i> Filter Tours</h3>
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="location" class="form-label fw-bold">Location:</label>
+                    <select name="location" class="form-select">
+                        <option value="">All Locations</option>
+                        @if (ViewBag.Locations != null)
+                        {
+                            foreach (var loc in ViewBag.Locations)
+                            {
+                                <option value="@loc" selected="@(Context.Request.Query["location"] == loc)">@loc</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="difficulty" class="form-label fw-bold">Difficulty:</label>
+                    <select name="difficulty" class="form-select">
+                        <option value="">All Levels</option>
+                        @if (ViewBag.Difficulties != null)
+                        {
+                            foreach (var diff in ViewBag.Difficulties)
+                            {
+                                <option value="@diff" selected="@(Context.Request.Query["difficulty"] == diff)">@diff</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <a href="@Url.Action("Browse")" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOURS GRID -->
+    <div class="row">
+        @foreach (var tour in Model)
+        {
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card h-100 shadow-sm tour-card">
+                    <div style="overflow: hidden; height: 200px; position: relative;">
+                        <!-- FIXED IMAGE WITH FALLBACK -->
+                        <img src="@tour.ImageUrl" alt="@tour.Name" class="card-img-top tour-image" style="height: 100%; object-fit: cover;"
+                             onerror="this.src='https://via.placeholder.com/800x400/3498db/ffffff?text=@Uri.EscapeDataString(tour.Name)';">
+                        <div style="position: absolute; top: 10px; right: 10px;">
+                            <span class="badge @(tour.Difficulty == "Moderate" ? "bg-warning text-dark" : "bg-success") rounded-pill">
+                                @tour.Difficulty
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title text-dark fw-bold">@tour.Name</h4>
+
+                        <p class="text-secondary mb-2">
+                            <i class="fas fa-map-marker-alt"></i> @tour.Location
+                        </p>
+
+                        <div class="mb-3" style="min-height: 80px;">
+                            <p class="card-text small text-muted">
+                                @{
+                                    var desc = tour.Description ?? "";
+                                    var shortDesc = desc.Length > 100 ? desc.Substring(0, 100) + "..." : desc;
+                                }
+                                @shortDesc
+                            </p>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-end">
+                            <div>
+                                <div class="mb-1 text-muted small">
+                                    <i class="fas fa-clock"></i> @tour.DurationDays day(s) <span class="mx-1">|</span>
+                                    <i class="fas fa-users"></i> Max @tour.MaxGroupSize
+                                </div>
+                                <h3 class="text-primary fw-bold mb-0">$@tour.Price</h3>
+                                <small class="text-muted">per person</small>
+                            </div>
+                            <div class="text-end">
+                                <a href="@Url.Action("Details", new { id = tour.Id })"
+                                   class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light border-top-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted fw-bold">
+                                <i class="fas fa-calendar"></i> @tour.StartDate.ToString("dd MMM yyyy")
+                            </small>
+                            <a href="@Url.Action("Book", new { id = tour.Id })"
+                               class="btn btn-success btn-sm rounded-pill px-3 fw-bold">
+                                <i class="fas fa-shopping-cart"></i> Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center my-5">
+            <i class="fas fa-search fa-4x text-muted mb-3"></i>
+            <h3 class="text-secondary">No tours found</h3>
+            <p class="text-muted">Try adjusting your filters or <a href="@Url.Action("Browse")">view all tours</a></p>
+        </div>
+    }
+
+    <!-- Quick Stats -->
+    <div class="row mt-5 p-4 bg-white rounded shadow-sm">
+        <div class="col-md-3 col-sm-6 text-center">
+            <h2 class="text-primary"><i class="fas fa-mountain"></i></h2>
+            <h3 class="text-dark my-2">@Model.Count()</h3>
+            <p class="text-muted fw-bold">Tours Available</p>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center">
+            <h2 class="text-success"><i class="fas fa-map-marker-alt"></i></h2>
+            <h3 class="text-dark my-2">@(ViewBag.Locations != null ? ViewBag.Locations.Count : 5)</h3>
+            <p class="text-muted fw-bold">Destinations</p>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center">
+            <h2 class="text-danger"><i class="fas fa-calendar-check"></i></h2>
+            <h3 class="text-dark my-2">Daily</h3>
+            <p class="text-muted fw-bold">Departures</p>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center">
+            <h2 class="text-warning"><i class="fas fa-star"></i></h2>
+            <h3 class="text-dark my-2">4.8/5</h3>
+            <p class="text-muted fw-bold">Customer Rating</p>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Add animation to tour cards
+            $('.tour-card').hover(
+                function () {
+                    $(this).css('transform', 'translateY(-5px)');
+                    $(this).css('transition', 'transform 0.3s ease');
+                },
+                function () {
+                    $(this).css('transform', 'translateY(0)');
+                }
+            );
+
+            // Fix image loading
+            $('img.tour-image').on('error', function () {
+                var title = $(this).attr('alt');
+                var placeholder = 'https://via.placeholder.com/800x400/3498db/ffffff?text=' + encodeURIComponent(title);
+                $(this).attr('src', placeholder);
+            });
+        });
+    </script>
+}

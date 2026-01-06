@@ -1,0 +1,75 @@
+@model IEnumerable<TourismMVC.Models.Booking>
+
+@{
+    ViewData["Title"] = "Manage Bookings";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="fas fa-users text-primary"></i> Manage Bookings</h1>
+            <h4 class="text-muted">For Tour: <strong>@ViewBag.TourName</strong></h4>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to My Tours</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning shadow-sm">
+            <i class="fas fa-info-circle"></i> No bookings have been made for this tour yet.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer Name</th>
+                                <th>Email</th>
+                                <th>Date Booked</th>
+                                <th>Group Size</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>#@item.Id</td>
+                                    <td>@item.CustomerName</td>
+                                    <td>
+                                        <a href="mailto:@item.CustomerEmail">@item.CustomerEmail</a>
+                                    </td>
+                                    <td>@item.BookingDate.ToString("g")</td>
+                                    <td class="text-center">@item.NumberOfPeople</td>
+                                    <td class="fw-bold text-success">$@item.TotalPrice</td>
+                                    <td>
+                                        <span class="badge bg-success">@item.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Total Bookings:</strong> @Model.Count()
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Total Participants:</strong> @Model.Sum(b => b.NumberOfPeople)
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Total Revenue:</strong> $@Model.Sum(b => b.TotalPrice).ToString("N2")
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

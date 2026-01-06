@@ -1,0 +1,163 @@
+@model IEnumerable<TourismMVC.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Bookings";
+    var upcoming = ViewBag.UpcomingBookings as List<TourismMVC.Models.Booking>;
+    var past = ViewBag.PastBookings as List<TourismMVC.Models.Booking>;
+}
+
+<div class="container mt-4">
+    <h1><i class="fas fa-calendar-alt text-primary"></i> My Bookings</h1>
+
+    @if (!Model.Any()) {
+        <div class="alert alert-info mt-4">
+            <h4 class="alert-heading"><i class="fas fa-info-circle"></i> No bookings found</h4>
+            <p>You haven't made any bookings yet. <a asp-controller="Tours" asp-action="Browse" class="alert-link">Browse our tours</a> to get started!</p>
+        </div>
+    } else {
+        <!-- Upcoming Trips -->
+        <div class="card border-success mt-4 shadow-sm">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0 h5">
+                    <i class="fas fa-plane-departure"></i> Upcoming Trips
+                </h3>
+                <span class="badge bg-white text-success rounded-pill">@upcoming?.Count</span>
+            </div>
+            <div class="card-body p-0">
+                @if (upcoming == null || upcoming.Count == 0)
+                {
+                    <div class="p-4 text-center text-muted">
+                        <p class="mb-0"><i class="fas fa-info-circle"></i> No upcoming trips booked.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Tour</th>
+                                    <th>Date</th>
+                                    <th>People</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var booking in upcoming)
+                                {
+                                    <tr>
+                                        <td><strong>#@booking.Id</strong></td>
+                                        <td>
+                                            <strong class="text-primary">@booking.TourPackage?.Name</strong><br>
+                                            <small class="text-muted">@booking.TourPackage?.Location</small>
+                                        </td>
+                                        <td>@booking.TourPackage?.StartDate.ToString("dd MMM yyyy")</td>
+                                        <td>@booking.NumberOfPeople person(s)</td>
+                                        <td class="text-success fw-bold">$@booking.TotalPrice</td>
+                                        <td>
+                                            <span class="badge bg-success">@booking.Status</span>
+                                        </td>
+                                        <td>
+                                            <a asp-controller="Tours" asp-action="Details" asp-route-id="@booking.TourPackageId"
+                                               class="btn btn-sm btn-outline-info">
+                                                <i class="fas fa-eye"></i> View Tour
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    
+        <!-- Past Trips -->
+        <div class="card border-secondary mt-4 shadow-sm">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0 h5">
+                    <i class="fas fa-history"></i> Past Trips
+                </h3>
+                <span class="badge bg-white text-secondary rounded-pill">@past?.Count</span>
+            </div>
+            <div class="card-body p-0">
+                @if (past == null || past.Count == 0)
+                {
+                    <div class="p-4 text-center text-muted">
+                        <p class="mb-0"><i class="fas fa-info-circle"></i> No past trips.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Tour</th>
+                                    <th>Date</th>
+                                    <th>People</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var booking in past)
+                                {
+                                    <tr>
+                                        <td>#@booking.Id</td>
+                                        <td>
+                                            <strong>@booking.TourPackage?.Name</strong><br>
+                                            <small class="text-muted">@booking.TourPackage?.Location</small>
+                                        </td>
+                                        <td>@booking.TourPackage?.StartDate.ToString("dd MMM yyyy")</td>
+                                        <td>@booking.NumberOfPeople person(s)</td>
+                                        <td>$@booking.TotalPrice</td>
+                                        <td>
+                                            <span class="badge bg-secondary">Completed</span>
+                                        </td>
+                                        <td>
+                                            <a asp-controller="Tours" asp-action="Details" asp-route-id="@booking.TourPackageId"
+                                               class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-eye"></i> View Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    
+        <!-- Quick Stats -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card bg-light p-3 text-center h-100 shadow-sm border-0">
+                    <h2 class="text-success"><i class="fas fa-calendar-check"></i></h2>
+                    <h3 class="my-2">@upcoming?.Count</h3>
+                    <p class="text-muted mb-0">Upcoming Trips</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light p-3 text-center h-100 shadow-sm border-0">
+                    <h2 class="text-muted"><i class="fas fa-history"></i></h2>
+                    <h3 class="my-2">@past?.Count</h3>
+                    <p class="text-muted mb-0">Past Trips</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light p-3 text-center h-100 shadow-sm border-0">
+                    <h2 class="text-primary"><i class="fas fa-dollar-sign"></i></h2>
+                    <h3 class="my-2">$@(((upcoming?.Sum(b => b.TotalPrice) ?? 0) + (past?.Sum(b => b.TotalPrice) ?? 0)).ToString("N0"))</h3>
+                    <p class="text-muted mb-0">Total Spent</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

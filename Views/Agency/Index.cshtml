@@ -1,0 +1,53 @@
+@model TourismMVC.Models.AgencyProfile
+
+@{
+    ViewData["Title"] = "My Agency Profile";
+}
+
+<h1>My Agency Profile</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AgencyName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AgencyName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LicenseNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LicenseNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BusinessEmail)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BusinessEmail)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LicenseDocumentPath)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (!string.IsNullOrEmpty(Model.LicenseDocumentPath))
+            {
+                <a href="~/uploads/agency_docs/@Model.LicenseDocumentPath" target="_blank">View License</a>
+            }
+            else
+            {
+                <span>No document uploaded</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+</div>
